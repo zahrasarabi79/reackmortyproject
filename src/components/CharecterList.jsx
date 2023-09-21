@@ -3,31 +3,25 @@ import maleSvg from "../assets/img/icons8-jerry-smith.svg";
 import femaleSvg from "../assets/img/icons8-summer-smith.svg";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import Loading from "./Loading";
-function CharecterList({
-  characters,
-  isLoading,
-  onSelectCharechter,
-  selectedId,
-}) {
+function CharecterList({ characters, isLoading, onSelectCharechter, selectedId }) {
   return (
     <div className="characters-list">
       {isLoading ? (
         <Loading />
       ) : (
         characters.map((item) => (
-          <Charecter
-            key={item.id}
-            item={item}
-            onSelectCharechter={onSelectCharechter}
-            selectedId={selectedId}
-          />
+          <Charecter key={item.id} item={item} >
+            <button className="red icon" onClick={() => onSelectCharechter(item.id)}>
+              {selectedId === item.id ? <EyeSlashIcon /> : <EyeIcon />}
+            </button>
+          </Charecter>
         ))
       )}
     </div>
   );
 }
 
-function Charecter({ item, onSelectCharechter, selectedId }) {
+export function Charecter({ item, children }) {
   return (
     <div className="list__item">
       <img src={item.image} alt={item.name} />
@@ -36,15 +30,11 @@ function Charecter({ item, onSelectCharechter, selectedId }) {
         <span>{item.name}</span>
       </h3>
       <div className="list-item__info info">
-        <span
-          className={`status ${item.status === "Dead" ? "red" : ""}`}
-        ></span>
+        <span className={`status ${item.status === "Dead" ? "red" : ""}`}></span>
         <span> {item.status} </span>
         <span> - {item.species}</span>
       </div>
-      <button className="red icon" onClick={() => onSelectCharechter(item.id)}>
-        {selectedId === item.id ? <EyeSlashIcon /> : <EyeIcon />}
-      </button>
+      {children}
     </div>
   );
 }

@@ -16,7 +16,7 @@ function App() {
   const [characters, setcharacters] = useState([]);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-  const [favourites, setFavourites] = useState([]);
+  const [favourites, setFavourites] = useState(() => JSON.parse(localStorage.getItem("FAVOURITES")) || []);
   const [count, setCount] = useState(0);
 
   // argument of useEffect did not get "async"=> infinity loop
@@ -118,6 +118,9 @@ function App() {
     };
   }, [query]);
 
+  useEffect(() => {
+    localStorage.setItem("FAVOURITES", JSON.stringify(favourites));
+  }, [favourites]);
   // cleanup function example
   // useEffect(() => {
   //   const interval = setInterval(() => setCount((c) => c + 1), 1000);
@@ -134,6 +137,9 @@ function App() {
   const handleAddFavourite = (char) => {
     setFavourites((prevfave) => [...prevfave, char]);
   };
+  const handleDeleteFaivourite = (id) => {
+    setFavourites((prevfave) => prevfave.filter((fav) => fav.id !== id));
+  };
   return (
     <div className="app">
       <div style={{ color: "white" }}>{count}</div>
@@ -142,7 +148,7 @@ function App() {
       <Navbar>
         <Search setQuery={setQuery} query={query} />
         <SearchResult numOfResult={characters.length} />
-        <Favourites numOfFaivourite={favourites.length} />
+        <Favourites Faivourite={favourites} onDeleteFaivourite={handleDeleteFaivourite} />
       </Navbar>
       <div className="main">
         <CharecterList characters={characters} isLoading={isLoading} onSelectCharechter={handleSelectCharechter} selectedId={selectedId} />
